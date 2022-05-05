@@ -1,0 +1,91 @@
+﻿@model JohnsAuthority.Models.LocationViewModels.SearchLocationViewModel
+
+<div id="locations">
+    @if (Model.Businesses.Count() > 0)
+    {
+        <div class="" style="padding-top:50px;">
+            <div class="row">
+                @foreach (var business in Model.Businesses)
+                {
+                    @await Html.PartialAsync("~/Views/Shared/_LocationDetailViewModel.cshtml", business)
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="container body-content" style="padding-top:50px;padding-bottom:300px;font-size:2em;text-align:center;">
+            <div class="row">
+                We can't find any places in your area.
+            </div>
+        </div>
+    }
+
+    @if (Model.Businesses.Count > 0)
+    {
+
+        var prevDisabled = !Model.Businesses.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.Businesses.HasNextPage ? "disabled" : "";
+
+        <a id="prevBtn" class="btn btn-default @prevDisabled btn" style="width:7em;">
+            Previous
+        </a>
+        <a id="nextBtn" class="btn btn-default @nextDisabled btn" style="width:7em;">
+            Next
+        </a>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        $locationsDiv = $('#locations');
+        $loadingDiv = $('#loading');
+        $("#prevBtn").click(function () {
+            jsonModel.page--;
+            data = JSON.stringify(jsonModel);
+            $locationsDiv.hide();
+            $loadingDiv.show();
+
+            $.ajax({
+                type: "post",
+                data: data,
+                url: url,
+                contentType: "application/json",
+                dataType: "HTML",
+                success: function (data) {
+                    $loadingDiv.hide();
+                    $locationsDiv.show();
+                    $locationsDiv.replaceWith(data);
+                    displayDistance(userLatitude, userLongitude);
+                },
+                error: function (result) {
+                    $locationsDiv.replaceWith('<div id="problemNotice">There was a problem with finding nearby locations. Please try again or report the issue using the contact link in the menu above.</div >')
+                }
+            });
+        });
+
+        $("#nextBtn").click(function () {
+            jsonModel.page++;
+            data = JSON.stringify(jsonModel);
+            $locationsDiv.hide();
+            $loadingDiv.show();
+
+            $.ajax({
+                type: "post",
+                data: data,
+                url: url,
+                contentType: "application/json",
+                dataType: "HTML",
+                success: function (data) {
+                    $loadingDiv.hide();
+                    $locationsDiv.show();
+                    $locationsDiv.replaceWith(data);
+                    displayDistance(userLatitude, userLongitude);
+                },
+                error: function (result) {
+                    $locationsDiv.replaceWith('<div id="problemNotice">There was a problem with finding nearby locations. Please try again or report the issue using the contact link in the menu above.</div >');
+                }
+            });
+        });
+    });
+</script>

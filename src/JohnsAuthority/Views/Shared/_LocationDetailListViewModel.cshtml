@@ -1,0 +1,24 @@
+﻿@model LocationDetailListViewModel
+@using JohnsAuthority.Models.LocationViewModels
+
+<div class="container">
+    @if (Model.LocationDetails.Count() > 0)
+    {
+        <div style="padding-top:50px;">
+            <div class="row">
+                @foreach (var loc in Model.LocationDetails)
+                {
+                    @await Html.PartialAsync("~/Views/Shared/_LocationDetailViewModel.cshtml", loc)
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div id="problemNotice">
+            <div class="row">
+                We can't find any places in your area.
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,46 @@
+@model Review
+
+@using System.Security.Claims;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value; }
+<div class="panel panel-default">
+    <div class="location-list panel-body" style="display: flex;flex-direction: column;min-height: 20vh;">
+        <div>
+            @if (Model.User != null)
+            {
+                <strong><a asp-action="Details" asp-controller="Account" asp-route-id="@Model.User.Id">@Model.User.UserName</a></strong>
+            }
+            else
+            {
+                <span><strong>Account does not exists</strong></span>
+            }
+            @if (SignInManager.IsSignedIn(User))
+            {
+                if (Model?.User?.Id == userId)
+                {
+                    <span class="mangage-review-action">
+                        <a asp-action="Edit" asp-controller="Reviews" asp-route-id="@Model.Id" title="Edit Review">
+                            <i class="fa fa_btn fa-edit" aria-hidden="true"> Edit</i>
+                        </a>
+                        <a asp-action="Delete" asp-controller="Reviews" asp-route-id="@Model.Id" title="Delete Review">
+                            <i class="fa fa_btn fa-trash-o" aria-hidden="true"> Delete</i>
+                        </a>
+                    </span>
+                }
+            }
+        </div>
+        <hr />
+        <span class="location-content">@Model.Content</span>
+        <div class="action-div">
+            <span title="@Model.Date.ToString()">@Model.Date.ToString("d")</span>
+            @Html.Partial("~/Views/Shared/_Score.cshtml", Model.Score)
+            <div>
+                <a asp-action="Create" asp-controller="Reports" asp-route-targetId="@Model.Id" asp-route-type="Review" title="Report Review">
+                    <i class="fa fa_btn fa-flag" aria-hidden="true"> Report</i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

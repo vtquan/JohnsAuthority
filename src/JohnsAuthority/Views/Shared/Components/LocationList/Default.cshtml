@@ -1,0 +1,13 @@
+﻿@model JohnsAuthority.Helpers.PaginatedList<LocationDetailViewModel>
+@using JohnsAuthority.Models.LocationViewModels
+
+<h3>Location List</h3>
+<ul>
+    @foreach(var location in Model)
+    {
+        <li>@location.</li>
+    }
+</ul>
+<div>
+    @await Component.InvokeAsync("PriorityList", new { maxPriority = 2, isDone = false })
+</div>

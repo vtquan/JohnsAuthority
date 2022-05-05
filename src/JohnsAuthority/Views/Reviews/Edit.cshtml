@@ -1,0 +1,44 @@
+@model JohnsAuthority.Models.ReviewViewModels.CreateEditReviewViewModel
+
+@{
+    ViewData["Title"] = "Edit Review";
+}
+
+<h2>@Model.LocationName</h2>
+
+<form asp-action="Edit">
+    <h4>Edit Review</h4>
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="LocationId" />
+    <input type="hidden" asp-for="ReviewId" />
+    <input type="hidden" asp-for="LocationName" />
+    <div class="form-group">
+        <label asp-for="ReviewContent" class="control-label"></label>
+        <textarea asp-for="ReviewContent" class="multiline-input form-control" style="letter-spacing:0.5px" autofocus="autofocus"></textarea>
+        <span asp-validation-for="ReviewContent" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label asp-for="ReviewScore" class="control-label"></label>
+        <select asp-for="ReviewScore" class="form-control" style="color: #E80000">
+            <option value="0">&#xf006 &#xf006 &#xf006 &#xf006 &#xf006 </option>
+            <option value="1">&#xf005 &#xf006 &#xf006 &#xf006 &#xf006 </option>
+            <option value="2">&#xf005 &#xf005 &#xf006 &#xf006 &#xf006 </option>
+            <option value="3">&#xf005 &#xf005 &#xf005 &#xf006 &#xf006 </option>
+            <option value="4">&#xf005 &#xf005 &#xf005 &#xf005 &#xf006 </option>
+            <option value="5">&#xf005 &#xf005 &#xf005 &#xf005 &#xf005 </option>
+        </select>
+        <span asp-validation-for="ReviewScore" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-default" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Details" asp-controller="Locations" asp-route-id="@Model.LocationId">Back to Previous Location</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

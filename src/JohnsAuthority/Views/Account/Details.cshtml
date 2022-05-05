@@ -1,0 +1,45 @@
+@model DetailsAccountViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+<div>
+    <div class="profile-header">
+        <h2>@Model.User.UserName</h2>
+        @*<div>@Html.DisplayNameFor(model => model.User.Email): @Html.DisplayFor(model => model.User.Email)</div>*@
+        @if (!String.IsNullOrEmpty(Model.User.PhoneNumber))
+        {
+            <div>Phone Number: @Html.DisplayFor(model => model.User.PhoneNumber)</div>
+        }
+    </div>
+    <div class="profile-menu">
+        <span>
+            <i class="fa fa-star" aria-hidden="true"></i> @(@Model.User.Reviews == null ? 0 : Model.User.Reviews.Count() ) @(@Model.User.Reviews?.Count() > 1 ? "Reviews" : "Review" )
+        </span>
+        |
+        <span>
+            <i class="fa fa-camera" aria-hidden="true"></i> @(@Model.User.Images?.Count() == null ? 0 : Model.User.Images.Count() ) @(@Model.User.Images?.Count() > 1 ? "Images" : "Image" )
+        </span>
+    </div>
+    <h3>Recent Reviews</h3>
+    @if (Model.Reviews != null)
+    {
+        @foreach (var review in Model.Reviews)
+        {
+            @await Html.PartialAsync("~/Views/Shared/_Review.cshtml", review)
+        }
+
+        var prevDisabled = !Model.Reviews.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.Reviews.HasNextPage ? "disabled" : "";
+
+        <a asp-action="Details"
+           asp-route-page="@(Model.Reviews.PageIndex - 1)"
+           class="btn btn-default @prevDisabled btn" style="width:7em;">
+            Previous
+        </a>
+        <a asp-action="Details"
+           asp-route-page="@(Model.Reviews.PageIndex + 1)"
+           class="btn btn-default @nextDisabled btn" style="width:7em;">
+            Next
+        </a>
+    }
+</div>

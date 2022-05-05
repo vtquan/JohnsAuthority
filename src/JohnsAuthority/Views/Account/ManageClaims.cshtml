@@ -1,0 +1,56 @@
+@model JohnsAuthority.Helpers.PaginatedList<ApplicationUser>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@{
+    ViewData["Title"] = "Manage Claims";
+}
+
+<h2>Manage Claims</h2>
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>EmailConfirm?</th>
+        <th>IsAdmin?</th>
+        <th></th>
+    </tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.UserName</td>
+            <td>@user.Email</td>
+            <td>@user.EmailConfirmed</td>
+            @if (AuthorizationService.AuthorizeAsync(User, "Administrators").GetAwaiter().GetResult().Succeeded)
+            {
+                <td>Yes</td>
+            }
+            else
+            {
+                <td>No</td>
+            }
+            <td>
+                <a asp-action="AddUserToAdminRoleAsync" asp-route-id="@user.Id">Make Admin</a> |
+                <a asp-action="RemoveUserFromAdminRoleAsync" asp-route-id="@user.Id">Remove Admin</a>
+            </td>
+        </tr>
+    }
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-page="@(Model.PageIndex - 1)"
+   class="btn btn-default @prevDisabled btn" style="width:7em;">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-page="@(Model.PageIndex + 1)"
+   class="btn btn-default @nextDisabled btn" style="width:7em;">
+    Next
+</a>

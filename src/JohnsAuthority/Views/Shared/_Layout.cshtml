@@ -1,0 +1,114 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Johns Authority</title>
+    <link href="https://fonts.googleapis.com/css?family=Abel|Arima+Madurai|Cantarell|Didact+Gothic|Khula|Nobile|Playfair+Display|Raleway|Scada" rel="stylesheet">
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/lib/slick-carousel/slick/slick.css" />
+        <link rel="stylesheet" href="~/lib/slick-carousel/slick/slick-theme.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="~/css/default.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/lib/slick-carousel/slick/slick.css" />
+        <link rel="stylesheet" href="~/lib/slick-carousel/slick/slick-theme.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="~/css/default.css" />
+    </environment>
+    <meta name="description" content="bathroom reviews, restroom reviews, find closest bathrooms, bathrooms, toilet, water closet, lavatory, diaper stations, latrine, privy" />
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Johns Authority</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a asp-controller="Home" asp-action="Index" title="Home">Home</a></li>
+                    <li><a asp-controller="Home" asp-action="Contact" title="Contact us">Contact</a></li>
+                    @if (AuthorizationService.AuthorizeAsync(User, "Administrators").GetAwaiter().GetResult().Succeeded)
+                    {
+                        <li><a asp-controller="Home" asp-action="Administrator" title="Dashboard">Dashboard</a></li>
+                    }
+                    else if (AuthorizationService.AuthorizeAsync(User, "Moderators").GetAwaiter().GetResult().Succeeded)
+                    {
+                        <li><a asp-controller="Home" asp-action="Moderator" title="Dashboard">Dashboard</a></li>
+                    }
+                </ul>
+                @await Html.PartialAsync("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div id="body_container" class="container body-content">
+        @RenderBody()
+        <br />
+    </div>
+    <footer>
+        <div>&copy; 2016 - Johns Authority</div>
+        @*<div class="social-div">
+            <a href="#" title="Follow us on Youtube">
+                <i class="fa fa_btn fa-youtube-square" aria-hidden="true"></i>
+            </a>
+            <a href="#" title="Follow us on Instagram">
+                <i class="fa fa_btn fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="#" title="Follow us on Twitter">
+                <i class="fa fa_btn fa-twitter-square" aria-hidden="true"></i>
+            </a>
+            <a href="#" title="Follow us on Facebook">
+                <i class="fa fa_btn fa-facebook-square" aria-hidden="true"></i>
+            </a>
+        </div>*@
+    </footer>
+
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script>
+            (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-92816269-1', 'auto');
+            ga('send', 'pageview');
+
+        </script>
+    </environment>
+
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
+</body>
+</html>

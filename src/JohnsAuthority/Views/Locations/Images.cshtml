@@ -1,0 +1,106 @@
+@model JohnsAuthority.Models.LocationViewModels.LocationDetailViewModel
+@using System.Security.Claims;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value; }
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+<h2>@Model.Name</h2>
+<h4>Images</h4>
+<hr />
+<div class="image-viewer">
+    @if (Model.Images.Count > 0)
+    {
+        <div id="main-image" style="background-image:url('@Model.Images.First().GetPath()')"></div>
+    }
+    else
+    {
+        <div id="main-image"><div>No image uploaded</div></div>
+    }
+</div>
+<div style="padding:25px;">
+    <div class="slick-slider slick-images">
+        @if (Model.Images.Count > 0)
+        {
+            @foreach (var image in Model.Images.OrderByDescending(m => m.UploadedDate))
+            {
+                <div style="padding: 1em;">
+                    <div style="" onclick='updateImage("@image.GetPath()")'>
+                        <img style="height: 15vh;min-height: 200px;" src="@image.GetPath()" />
+                    </div>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        if (image?.User?.Id == userId)
+                        {
+                            <div style="height:1em;">
+                                <a asp-action="Delete" asp-controller="Images" asp-route-id="@image.Id" title="Delete Image" style="font-size: 1.2em;">
+                                    <i class="fa fa_btn fa-trash" aria-hidden="true"> Delete</i>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="height:1em;">
+                                <a asp-action="Create" asp-controller="Reports" asp-route-targetId="@image.Id" asp-route-type="Image" title="Report Image" style="font-size: 1.2em;">
+                                    <i class="fa fa_btn fa-flag" aria-hidden="true"> Report</i>
+                                </a>
+                            </div>
+
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>
+<div class="text-center">
+    <form method="post" asp-action="AddImage" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <input type="file" name="files" class="file-upload" style="margin: auto; border: 1px solid grey; padding: 1%" multiple />
+        <br />
+        <input type="submit" value="Add Photos" class="btn btn-default" />
+    </form>
+</div>
+<div>
+    <a asp-action="Details" asp-route-id="@Model.Id">Back to Previous Location</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).on('ready', function () {
+            $('.slick-slider').slick({
+                slidesToShow: 3,
+                infinite: true,
+                focusOnSelect: true,
+                swipeToSlide: true,
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            slidesToShow: 2,
+                            slidesToScroll: 2
+                        }
+                    },
+                    {
+                        breakpoint: 480,
+                        settings: {
+                            slidesToShow: 1,
+                            slidesToScroll: 1
+                        }
+                    }
+                ]
+            });
+        });
+
+        $(window).on('load', function (e) {
+            $('.slick-slider').show();
+        })
+
+        function updateImage(path) {
+            $('#main-image').css("background-image", 'url(' + path + ')');
+        };
+    </script>
+}

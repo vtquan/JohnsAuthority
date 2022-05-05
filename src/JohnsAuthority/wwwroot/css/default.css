@@ -1,0 +1,388 @@
+﻿a {
+    color: #7EB1DC;
+}
+
+    a:hover {
+        color: #337ab7;
+    }
+
+input, select {
+    color: black;
+}
+
+body {
+    background-color: #2c3136;
+    color: white;
+    font-family: 'Khula', sans-serif;
+    letter-spacing: 0.1em;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.body-content {
+    flex: 1;
+}
+
+footer {
+    padding: 0 5%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.1em;
+    color: #d4d4d4;
+    border-top: 1px solid #a4a4a4;
+}
+
+hr {
+    border-color: grey;
+    margin: 10px 0;
+}
+
+select {
+    font-family: 'FontAwesome';
+}
+
+.btn {
+    background-color: transparent;
+    border: 1px solid;
+    border-radius: 0;
+    min-width: 7em;
+}
+
+    .btn:active, .btn.active, .btn:hover, .btn:focus, .btn.focus, .btn:active:hover, .btn:active:focus {
+        color: white;
+    }
+
+.btn-link {
+    border: 0;
+}
+
+.btn-default {
+    color: #59A6A6;
+    border-color: #59A6A6;
+}
+
+    .btn-default:active, .btn-default.active, .btn-default:hover, .btn-default:focus, .btn-default.focus, .btn-default:active:hover, .btn-default:active:focus {
+        background-color: #217A7A;
+        border-color: #59A6A6;
+    }
+
+.btn-danger {
+    color: red;
+    border-color: red;
+}
+
+    .btn-danger:active, .btn-danger.active, .btn-danger:hover, .btn-danger:focus, .btn-danger.focus, .btn-danger:active:hover, .btn-danger:active:focus {
+        background-color: #900000;
+        border-color: red;
+    }
+
+.btn-promo {
+    color: #E7D3BA;
+    border-color: #E7D3BA;
+    font-weight: normal;
+    font-size: medium;
+    width: 150px;
+}
+
+    .btn-promo:active, .btn-promo:active, .btn-promo:hover, .btn-promo:focus, .btn-promo.focus, .btn-promo:active:hover, .btn-promo:active:focus {
+        background-color: #A5855B;
+        border-color: #E7D3BA;
+    }
+
+#promo {
+    background-image: url('/images/press/promo-image.jpg');
+    background-size: cover;
+    height: 65vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    -webkit-clip-path: ellipse(70% 62% at 50% 35%);
+    clip-path: ellipse(70% 62% at 50% 35%);
+    color: #E7D3BA;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.2em;
+    padding: 30px;
+    text-align: center;
+    min-height: 400px;
+}
+
+#promo-input {
+    margin-bottom: 15px;
+    max-width: 100%;
+}
+
+.location-image {
+    background-size: cover;
+    height: 20em;
+    border: 1px solid #3e454c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+    .location-image:hover {
+        border: 1px solid #337ab7;
+    }
+
+    .location-image div {
+        font-size: 2em;
+    }
+
+.location-detail {
+    display: flex;
+    flex-direction: column;
+    min-height: 20em;
+    padding: 15px 0 0 0;
+}
+
+.location-content {
+    flex: 1;
+    white-space: pre-line;
+}
+
+.location-name {
+    font-size: 2.5em;
+    padding-top: 10px;
+    display: inline-block;
+}
+
+.avg-score {
+    font-size: 2em;
+}
+
+.action-div {
+    align-self: flex-end;
+    text-align: right;
+}
+
+    .action-div a:hover {
+        text-decoration: none;
+    }
+
+.mangage-review-action {
+    float: right;
+}
+
+    .mangage-review-action a:hover {
+        text-decoration: none;
+    }
+
+.fa {
+    color: #E80000;
+}
+
+.text-danger {
+    color: #E80000;
+}
+
+.social-div {
+    text-align: right;
+    flex: 1;
+    flex-direction: row-reverse;
+    font-size: 2em;
+    padding-top: .5em; /*Vertically align the icons*/
+}
+
+    .social-div a:hover {
+        text-decoration: none;
+    }
+
+.fa_btn {
+    color: #59A6A6;
+}
+
+    .fa_btn:hover {
+        color: #217A7A;
+    }
+
+.file-upload {
+    color: white;
+}
+
+/**ViewImages**/
+.image-viewer {
+    text-align: center;
+    height: 45vh;
+    min-height: 400px;
+    padding: 1%;
+    background-color: #3e454c;
+}
+
+#main-image {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+}
+
+.slick-images {
+    padding: 2% 0;
+}
+
+#problemNotice {
+    padding-top: 50px;
+    padding-bottom: 300px;
+    font-size: 1.5em;
+    text-align: center;
+    color: grey;
+}
+
+/**User Details**/
+.profile-header {
+    border-bottom: 0;
+}
+
+.profile-menu {
+    border: 1px solid grey;
+    padding: 2%;
+    margin: 2% 0;
+}
+
+/**Bootstrap Override**/
+.navbar-inverse {
+    background-color: #25292a;
+    border-color: #25292a;
+}
+
+    .navbar-inverse .navbar-brand {
+        color: #E7D3BA;
+    }
+
+    .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+        color: #A5855B;
+    }
+
+    .navbar-inverse .navbar-nav > li > a {
+        color: #E7D3BA;
+    }
+
+    .navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
+        color: #A5855B;
+    }
+
+.panel {
+    margin-bottom: 40px;
+}
+
+.panel-default {
+    border-radius: 0;
+    background-color: #3e454c;
+    border: 1px solid #3e454c;
+    color: #a4a4a4;
+}
+
+    .panel-default > .panel-heading {
+        border-radius: 0;
+        letter-spacing: 0.2em;
+        background-color: #3e454c;
+        color: #a4a4a4;
+    }
+
+#update-panel > .panel-heading {
+    color: #378B8B;
+}
+
+.panel-body {
+    line-height: 200%;
+    border-radius: 0;
+    color: white;
+}
+
+.panel-title {
+    font-size: 2em;
+    color: #7EB1DC;
+}
+
+#logoff-btn {
+    color: #E7D3BA;
+}
+
+    #logoff-btn:hover, #logoff-btn:focus {
+        color: #A5855B;
+    }
+
+.multiline-input {
+    height: 20vh;
+    min-height: 300px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.alert {
+    border: 0;
+    border-radius: 0;
+}
+
+.alert-info {
+    background-color: #3e454c;
+    color: inherit;
+}
+
+.nav-pills > li > a {
+    border-radius: 0;
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
+    background-color: #59A6A6;
+}
+
+/**Slick Override**/
+.slick-slider {
+    display: none;
+}
+
+.slick-dots li button:before {
+    color: #59A6A6;
+}
+
+.slick-dots .slick-active button:before {
+    color: #59A6A6;
+}
+
+.slick-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.slider-item {
+    border: 1px solid #3e454c;
+    height: 20vh;
+    min-height: 250px;
+    background-color: #808080;
+    font-size: 2em;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.slick-prev:before {
+    font-weight: bold;
+}
+
+.slick-next:before {
+    font-weight: bold;
+}
+
+/**Responsive**/
+@media (max-width: 768px) {
+    .container {
+        margin: 0; /*Slick slider break under 768px vw if container margin is auto*/
+    }
+}
+
+@media (min-width: 992px) {
+    .location-detail {
+        padding: 0 0 0 15px;
+    }
+}

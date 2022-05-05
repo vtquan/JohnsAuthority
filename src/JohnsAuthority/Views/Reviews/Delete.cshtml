@@ -1,0 +1,42 @@
+@model JohnsAuthority.Models.ReviewViewModels.CreateEditReviewViewModel
+
+@{
+    ViewData["Title"] = "Delete Review";
+}
+
+<h2>@Model.LocationName</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Delete Review</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ReviewContent)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ReviewContent)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ReviewScore)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ReviewScore)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input type="hidden" asp-for="LocationId" />
+            <input type="hidden" asp-for="ReviewId" />
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <a asp-action="Details" asp-controller="Locations" asp-route-id="@Model.LocationId">Back to Previous Location</a>
+        </div>
+    </form>
+</div>

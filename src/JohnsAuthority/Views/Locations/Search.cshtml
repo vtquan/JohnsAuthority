@@ -1,0 +1,119 @@
+﻿@model JohnsAuthority.Models.LocationViewModels.SearchLocationViewModel
+@{
+    ViewData["Title"] = "Search";
+}
+<h2>Searching for @Model.Description</h2>
+<form asp-action="Search">
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label asp-for="WithinDistance" class="control-label"></label>
+        <select asp-for="WithinDistance" class="form-control">
+            <option value="1">1 miles</option>
+            <option value="5">5 miles</option>
+            <option value="10">10 miles</option>
+            <option value="20">20 miles</option>
+        </select>
+        <span asp-validation-for="WithinDistance" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <input type="checkbox" asp-for="IsOpen" /> Currently Open
+    </div>
+    <div class="form-group">
+        <label for="AssignedAmenities" class="control-label">Amenities</label>
+        <div style="">
+            @for (int i = 0; i < Model.AssignedAmenities.Count(); i++)
+            {
+                <div>
+                    <input type="checkbox" asp-for="AssignedAmenities[i].Assigned" /> @Model.AssignedAmenities[i].AmenityName
+                    <input type="hidden" asp-for="AssignedAmenities[i].AmenityId" />
+                    <input type="hidden" asp-for="AssignedAmenities[i].AmenityName" />
+                </div>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Search" class="btn btn-default" />
+    </div>
+    <input type="hidden" asp-for="Latitude" />
+    <input type="hidden" asp-for="Longitude" />
+</form>
+
+<div id="loading" style="padding:50px 10%;font-size:2em;text-align:center;color:grey;">
+    <p>Searching for bathrooms...</p>
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#59A6A6;"></i>
+    <span class="sr-only">Loading...</span>
+</div>
+<div id="locations">
+</div>
+
+@section scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=###&libraries=geometry">
+    </script>
+    <script>
+        var $locationsDiv = $('#locations');
+        var $loadingDiv = $('#loading');
+        var model = '@(Json.Serialize(Model))';
+        var jsonModel = JSON.parse(model);
+        var data;
+        var userLatitude;
+        var userLongitude;
+        var url = "@Url.Action("SearchResultPartial", "Locations")";
+
+        $(document).ready(function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(displayLocations, displayNoLocationMessage);
+            } else {
+                displayNoLocationMessage();
+            }
+        });
+
+        function displayLocations(position) {
+            userLatitude = position.coords.latitude;
+            userLongitude = position.coords.longitude;
+
+            // update model with current coordinate
+            jsonModel.latitude = userLatitude;
+            jsonModel.longitude = userLongitude;
+
+            data = JSON.stringify(jsonModel);
+
+            $.ajax({
+                type: "post",
+                data: data,
+                url: url,
+                contentType: "application/json",
+                dataType: "HTML",
+                success: function (data) {
+                    $loadingDiv.hide();
+                    $locationsDiv.replaceWith(data);
+                    displayDistance(userLatitude, userLongitude);
+                },
+                error: function (result) {
+                    $locationsDiv.replaceWith('<div id="problemNotice">There was a problem with finding nearby locations. Please try again or report the issue using the contact link in the menu above.</div >');
+                }
+            });
+        };
+
+        function displayNoLocationMessage() {
+            $locationsDiv.replaceWith('<div id="problemNotice">We could not find your location. Make sure your location is turned on. You can also try using our search feature above.</div >');
+        };
+
+        function displayDistance(currentLat, currentLng) {
+            var currentCoordinate = new google.maps.LatLng(currentLat, currentLng);
+            $('.distance-placeholder').each(function (index, value) {
+                var locationLat = $(this).data('latitude');
+                var locationLng = $(this).data('longitude');
+                var locationCoordinate = new google.maps.LatLng(locationLat, locationLng);
+                var totalDistance = google.maps.geometry.spherical.computeDistanceBetween(locationCoordinate, currentCoordinate);
+                var totalDistanceInMiles = totalDistance * 0.000621371192;
+                $(this).replaceWith("<div style='color:#E80000'>" + totalDistanceInMiles.toFixed(2) + " mi away<div>");
+            });
+        };
+</script>
+}

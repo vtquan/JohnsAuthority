@@ -1,0 +1,49 @@
+﻿@model LocationDetailViewModel
+@using JohnsAuthority.Models.LocationViewModels
+
+<div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="location-list panel-body">
+            @if (Model.Images?.Count > 0)
+            {
+                <a href="@Url.Action("Details", "Locations", new { id = Model.Id })" title="View Location">
+                    <div class="location-image col-md-4" style="background-image: url('@Model.Images.OrderByDescending(m => m.UploadedDate).First().GetPath()');"></div>
+                </a>
+            }
+            else
+            {
+                <a href="@Url.Action("Details", "Locations", new { id = Model.Id })" title="View Location">
+                    <div class="location-image col-md-4" style="background-color: #808080"><div>No image uploaded</div></div>
+                </a>
+            }
+            <div class="location-detail col-md-8">
+                <h1 class="panel-title">@Html.ActionLink(Model.Name, "Details", "Locations", new { id = Model.Id }, new { title = "See More", itemprop = "headline" })</h1>                
+                <div>@Html.Partial("~/Views/Shared/_Score.cshtml", Model.GetRating())</div>
+                <div>Address: <a href='@Model.MapLink()'>@Model.PrintAddress()</a></div>
+                <div class="distance-placeholder" data-latitude="@Model.Coordinate.lat" data-longitude="@Model.Coordinate.lng"></div>
+                @if (!String.IsNullOrEmpty(Model.Phone))
+                {
+                    <div>Call: <a href='tel:@Model.Phone'>@Model.PrintPhone()</a></div>
+                }
+                @if (Model.LocationAmenities?.Count() > 0)
+                {
+                    <div>
+                        Amenities: @Model.PrintAmenities()
+                    </div>
+                }
+                <hr />
+                @if (Model.Reviews?.Count() > 0)
+                {
+                    <span class="location-content" style="white-space:pre-line;">@Model.Reviews.Last().Content</span>
+                }
+                else
+                {
+                    <span class="location-content"><a asp-action="Create" asp-controller="Reviews" asp-route-id="@Model.Id">No one reviews this place yet. Why don't you add one now by clicking here!</a></span>
+                }
+                <div class="action-div">
+                    @Html.ActionLink("See More", "Details", "Locations", new { id = Model.Id }, new { itemprop = "potentialAction", @class = "btn btn-default", title = "See More" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

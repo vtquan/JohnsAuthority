@@ -1,0 +1,25 @@
+﻿@model ContactMessage
+@{
+    ViewData["Title"] = "Contact";
+}
+<h2>Contact Us</h2>
+
+<form asp-action="Contact">
+    <h4>Send us a message!</h4>
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input type="email" asp-for="Email" class="form-control" autofocus="autofocus" />
+        <span asp-validation-for="Email" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Message" class="control-label"></label>
+        <textarea asp-for="Message" class="multiline-input form-control"></textarea>
+        <span asp-validation-for="Message" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Send Message" class="btn btn-default" />
+    </div>
+</form>

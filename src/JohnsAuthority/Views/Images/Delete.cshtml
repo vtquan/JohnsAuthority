@@ -1,0 +1,25 @@
+@model Image
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this image?</h3>
+<div>
+    <h4>Image</h4>
+    <hr />
+    <div class="image-viewer" style="margin-bottom: 2%;">
+        <div id="main-image" style="background-image:url('@Model.GetPath()')"></div>
+    </div>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            <a asp-action="ViewImages" asp-controller="Reports" asp-route-id="@Model.Location.Id" title="Report Location" class="btn btn-default">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
