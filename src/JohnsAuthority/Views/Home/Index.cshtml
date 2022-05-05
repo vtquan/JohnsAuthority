@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    #body_container {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+</style>
+
+<div id="promo">
+    <p style="font-size:3em">Improve your bathroom experience</p>
+
+    <form asp-action="Search" asp-controller="Locations" style="min-width:40%">
+        <input class="form-control input-lg" style="" id="promo-input" name="description" placeholder="Enter the type of business to search for" />
+        <button type="submit" class="btn btn-promo btn-lg" title="Search">Search</button>
+    </form>
+</div>
+
+<div id="locations" style="padding:50px 10%;font-size:2em;text-align:center;color:grey;">
+    <p>Searching for bathrooms...</p>
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#59A6A6;"></i>
+    <span class="sr-only">Loading...</span>
+</div>
+@section scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=###&libraries=geometry">
+    </script>
+    <script>
+        var $locationsDiv = $('#locations');
+
+        $(document).ready(function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(displayLocations, displayNoLocationMessage);
+            } else {
+                displayNoLocationMessage();
+            }
+        });
+
+        var geocoder = new google.maps.Geocoder();
+
+        function displayLocations(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var page = @ViewData["Page"];
+
+            var url = '@Url.Action("LocationListPartial", "Home")' + '?lat=' + lat + '&lng=' + lng;
+            $.get(url, function (data) {
+                $locationsDiv.replaceWith(data).promise().done(function (elem) {
+                    displayDistance(lat, lng);
+                });
+            });
+        };
+
+        function displayNoLocationMessage() {
+            $locationsDiv.replaceWith('<div id="problemNotice">We could not find your location. Make sure your location is turned on. You can also try using our search feature above.</div >');
+        };
+
+        function displayDistance(currentLat, currentLng) {
+            var currentCoordinate = new google.maps.LatLng(currentLat, currentLng);
+            $('.distance-placeholder').each(function (index, value) {
+                var locationLat = $(this).data('latitude');
+                var locationLng = $(this).data('longitude');
+                var locationCoordinate = new google.maps.LatLng(locationLat, locationLng);
+                var totalDistance = google.maps.geometry.spherical.computeDistanceBetween(locationCoordinate, currentCoordinate);
+                var totalDistanceInMiles = totalDistance * 0.000621371192;
+                $(this).replaceWith("<div style='color:#E80000'>" + totalDistanceInMiles.toFixed(2) + " mi away<div>");
+            });
+        };
+    </script>
+}

@@ -1,0 +1,182 @@
+@model JohnsAuthority.Models.LocationViewModels.LocationDetailViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+@using System.Security.Claims;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+<div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="location-name">
+                @Html.DisplayFor(model => Model.Name) 
+            </div>
+            <div class="avg-score">
+                @Html.Partial("~/Views/Shared/_Score.cshtml", Model.GetRating())
+            </div>
+            <div>Address: <a id="address" href='@Model.MapLink()'>@Model.PrintAddress()</a></div>
+            <div id="distance" style="color:grey;"></div>
+            @if (!String.IsNullOrEmpty(Model.Phone))
+            {
+                <div>Call: <a href='tel:@Model.Phone'>@Model.PrintPhone()</a></div>
+            }
+            <div>
+                Amenities:
+                <a asp-action="Edit" asp-controller="Locations" asp-route-id="@(Model.Id.ToString())" title="Edit Location" itemprop="potentialAction">
+                    <i class="fa fa_btn fa-pencil-square-o" aria-hidden="true"></i>
+                </a>
+            </div>
+            @if (Model.LocationAmenities.Count() > 0)
+            {
+                <ul>
+                @foreach (var amenity in Model.LocationAmenities)
+                {
+                        <li>@amenity.Amenity.Name</li>
+                }
+                </ul>
+            }
+            @*<div>Hours:</div>
+            <ul>
+                @foreach (var hour in Model.Hours.OrderBy(m => m.Day))
+                {
+                    <li><strong>@hour.Day.ToString()</strong> @(hour.StartTime.ToString("hh:mm tt") + " - " + @hour.EndTime.ToString("hh:mm tt"))</li>
+                }
+            </ul>*@
+            <div style="padding:15px 0;">
+                <a asp-action="Create" asp-controller="Reviews" asp-route-id="@(Model.Id)" title="Write Review" itemprop="potentialAction" class="btn btn-primary btn-default">
+                    Write Review
+                </a>
+                <a asp-action="Images" asp-controller="Locations" asp-route-id="@(Model.Id)" title="Add Images" itemprop="potentialAction" class="btn btn-primary btn-default">
+                    Add Photo
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6" style="padding:15px 40px;text-align:center;">
+            <div class="slick-slider">
+                @{
+                    //Limit slick slider to display up to maxImageToDisplay images
+                    int? numImages = Model.Images?.Count;
+                    int maxImageToDisplay = 5;
+
+                    if (numImages > 0)
+                    {
+                        if (numImages < maxImageToDisplay)
+                        {
+                            @foreach (var image in Model.Images.OrderByDescending(m => m.UploadedDate))
+                            {
+                                <div class="slider-item"><img src="@image.GetPath()" /></div>
+                            }
+                        }
+                        else
+                        {
+                            @for (int i = 0; i < maxImageToDisplay; i++)
+                            {
+                                <div class="slider-item"><img src="@Model.Images.ToList()[i].GetPath()" /></div>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <div class="slider-item"><div>No image uploaded</div></div>
+                    }
+                }
+            </div>
+            <a asp-action="Images"
+               asp-route-id="@(Model.Id)">
+                View All Images
+            </a>
+        </div>
+    </div>
+    <h3>
+        Reviews
+    </h3>
+    @if (Model.Reviews?.Count > 0)
+    {
+        foreach (var review in Model.Reviews)
+        {
+            @await Html.PartialAsync("~/Views/Shared/_Review.cshtml", review)
+        }
+
+        var prevDisabled = !Model.Reviews.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.Reviews.HasNextPage ? "disabled" : "";
+
+        <a asp-action="Details"
+           asp-route-page="@(Model.Reviews.PageIndex - 1)"
+           class="btn btn-default @prevDisabled btn" style="width:7em;">
+            Previous
+        </a>
+        <a asp-action="Details"
+           asp-route-page="@(Model.Reviews.PageIndex + 1)"
+           class="btn btn-default @nextDisabled btn" style="width:7em;">
+            Next
+        </a>
+    }
+    else
+    {
+        <div class="panel panel-default">
+            <div class="location-list panel-body" style="display: flex;flex-direction: column;min-height: 20vh;">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <strong><a asp-action="Details" asp-controller="Account" asp-route-id="@UserManager.GetUserId(User)">@User.Identity.Name</a></strong>
+
+                }
+                else
+                {
+                    <strong><a asp-area="" asp-controller="Account" asp-action="Register">(You)</a></strong>
+                }
+                <hr />
+                <span class="location-content" style="white-space:pre-line;"><a asp-action="Create" asp-controller="Reviews" asp-route-id="@Model.Id">No one review this place yet. Why don't you make this your review by clicking here. We already reserved a spot for you after all.</a></span>
+                <div class="action-div" style="text-align: right;">
+                    <span title="@DateTime.Now.ToString()">@DateTime.Now.ToString("d")</span>
+                    @Html.Partial("~/Views/Shared/_Score.cshtml", (float)5.0)
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@section scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=###&libraries=geometry">
+    </script>
+    <script>
+        var locationLat = @Model.Coordinate.lat;
+        var locationLng = @Model.Coordinate.lng;
+
+        var distanceDiv = document.getElementById('distance');
+        $(document).on('ready', function(){
+            $('.slick-slider').slick({
+                dots: true,
+                autoplay: true,
+                autoplaySpeed: 6000,
+            });
+
+
+            if(locationLat != 0 && locationLng != 0) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(printDistance, removePlaceholder);
+                } else {
+                    removePlaceholder();
+                }
+            } else {
+                removePlaceholder();
+            }
+        });
+
+        $(window).on('load', function (e) {
+            $('.slick-slider').show();
+        })
+
+        function printDistance(position) {
+            var currentLat = position.coords.latitude;
+            var currentLng = position.coords.longitude;
+            var currentCoordinate = new google.maps.LatLng(currentLat, currentLng);
+            var locationCoordinate = new google.maps.LatLng(locationLat, locationLng);
+            var totalDistance = google.maps.geometry.spherical.computeDistanceBetween(locationCoordinate, currentCoordinate);
+            var totalDistanceInMiles = totalDistance * 0.000621371192;
+            distanceDiv.innerHTML = "<div style='color:#E80000'>" + totalDistanceInMiles.toFixed(2) + " mi away<div>";
+        }
+
+        function removePlaceholder() {
+            distanceDiv.innerHTML = "";
+        }
+    </script>
+}
